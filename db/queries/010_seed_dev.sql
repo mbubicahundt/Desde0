@@ -1,0 +1,5 @@
+-- 010_seed_dev.sql
+-- Optional dev seed (keep commented for safety)
+--
+-- insert into public.users (email, password_hash, role, name)
+-- values ('seller@example.com', '<bcrypt-hash>', 'SELLER', 'Seller Demo');

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Detalle — LuxAuto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/base.css" />
+  <link rel="stylesheet" href="./styles/layout.css" />
+  <link rel="stylesheet" href="./styles/components.css" />
+  <link rel="stylesheet" href="./styles/pages.css" />
+</head>
+<body>
+  <div class="page">
+    <div data-include="./partials/navbar.html"></div>
+
+    <main class="section">
+      <div class="container" id="detailRoot">
+        <div class="glass card" id="loadingBox">Cargando...</div>
+      </div>
+    </main>
+
+    <div data-include="./partials/footer.html"></div>
+  </div>
+
+  <script src="./js/config.js"></script>
+  <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/car-detail-page.js"></script>
+</body>
+</html>

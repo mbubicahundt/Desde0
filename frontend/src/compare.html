@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Comparar — LuxAuto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/base.css" />
+  <link rel="stylesheet" href="./styles/layout.css" />
+  <link rel="stylesheet" href="./styles/components.css" />
+  <link rel="stylesheet" href="./styles/pages.css" />
+</head>
+<body>
+  <div class="page">
+    <div data-include="./partials/navbar.html"></div>
+
+    <main class="section">
+      <div class="container">
+        <div style="font-weight:900; font-size:24px">Comparador</div>
+        <div style="color:var(--text-1); margin-top:6px">Hasta 4 autos a la vez.</div>
+
+        <div class="glass card" style="margin-top:14px">
+          <div id="compareHint" style="color:var(--text-1)">Seleccioná autos desde el listado para verlos acá.</div>
+          <div style="overflow:auto">
+            <table class="table" id="compareTable"></table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div data-include="./partials/footer.html"></div>
+  </div>
+
+  <script src="./js/config.js"></script>
+  <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/compare-page.js"></script>
+</body>
+</html>

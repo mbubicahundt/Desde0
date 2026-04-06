@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Registro — LuxAuto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/base.css" />
+  <link rel="stylesheet" href="./styles/layout.css" />
+  <link rel="stylesheet" href="./styles/components.css" />
+  <link rel="stylesheet" href="./styles/pages.css" />
+</head>
+<body>
+  <div class="page">
+    <div data-include="./partials/navbar.html"></div>
+
+    <main class="section">
+      <div class="container" style="max-width:560px">
+        <div class="glass card">
+          <div style="font-weight:900; font-size:22px">Crear cuenta</div>
+          <div style="color:var(--text-1); margin-top:6px">Elegí tu rol (comprador o vendedor).</div>
+
+          <form id="registerForm" style="margin-top:16px; display:grid; gap:10px">
+            <div>
+              <label>Nombre (opcional)</label>
+              <input class="input" name="name" />
+            </div>
+            <div>
+              <label>Email</label>
+              <input class="input" name="email" type="email" required />
+            </div>
+            <div>
+              <label>Contraseña</label>
+              <input class="input" name="password" type="password" minlength="6" required />
+            </div>
+            <div>
+              <label>Rol</label>
+              <select name="role" required>
+                <option value="BUYER">Comprador</option>
+                <option value="SELLER">Vendedor</option>
+              </select>
+            </div>
+            <button class="btn primary" type="submit">Crear cuenta</button>
+          </form>
+
+          <div style="margin-top:12px; color:var(--text-1); font-size:13px">
+            ¿Ya tenés cuenta? <a href="./login.html" style="color:var(--accent-2)">Ingresá</a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div data-include="./partials/footer.html"></div>
+  </div>
+
+  <script src="./js/config.js"></script>
+  <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/register-page.js"></script>
+</body>
+</html>

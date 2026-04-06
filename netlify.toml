@@ -1,0 +1,3 @@
+[build]
+  publish = "frontend/src"
+  command = "node scripts/netlify-generate-config.mjs"

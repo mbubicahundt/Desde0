@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LuxAuto — Autos usados con análisis IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/base.css" />
+  <link rel="stylesheet" href="./styles/layout.css" />
+  <link rel="stylesheet" href="./styles/components.css" />
+  <link rel="stylesheet" href="./styles/pages.css" />
+</head>
+<body>
+  <div class="page">
+    <div data-include="./partials/navbar.html"></div>
+
+    <main>
+      <section class="section hero">
+        <div class="container hero-grid">
+          <div class="glass card">
+            <div class="chip" style="margin-bottom:12px">IA • Daños • Valor de mercado</div>
+            <h1>Comprá y vendé autos usados con confianza.</h1>
+            <p>Publicá tu vehículo, subí fotos y obtené una estimación de estado y rango de precio usando inteligencia artificial.</p>
+            <div class="split">
+              <a class="btn primary" href="./cars.html">Buscar autos</a>
+              <a class="btn" href="./sell-car.html">Publicar auto</a>
+            </div>
+          </div>
+
+          <div class="glass hero-media">
+            <img src="https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?auto=format&fit=crop&w=1400&q=80" alt="Auto" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section tight">
+        <div class="container">
+          <div class="grid cols-3">
+            <div class="glass card">
+              <div style="font-weight:900">Análisis de estado IA</div>
+              <div style="color:var(--text-1); margin-top:6px">Estimación: excelente, bueno, regular o requiere reparación.</div>
+            </div>
+            <div class="glass card">
+              <div style="font-weight:900">Detección de daños</div>
+              <div style="color:var(--text-1); margin-top:6px">Posibles daños visibles en carrocería y ópticas.</div>
+            </div>
+            <div class="glass card">
+              <div style="font-weight:900">Valor de mercado</div>
+              <div style="color:var(--text-1); margin-top:6px">Rango aproximado para evitar sobreprecios.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px">
+            <div>
+              <div style="font-weight:900; font-size:20px">Marcas populares</div>
+              <div style="color:var(--text-1); font-size:13px; margin-top:4px">Filtrá rápido por marca.</div>
+            </div>
+            <a class="btn" href="./cars.html">Ver todos</a>
+          </div>
+          <div class="split">
+            <a class="chip" href="./cars.html?brand=Toyota">Toyota</a>
+            <a class="chip" href="./cars.html?brand=Ford">Ford</a>
+            <a class="chip" href="./cars.html?brand=Volkswagen">Volkswagen</a>
+            <a class="chip" href="./cars.html?brand=Chevrolet">Chevrolet</a>
+            <a class="chip" href="./cars.html?brand=BMW">BMW</a>
+            <a class="chip" href="./cars.html?brand=Mercedes">Mercedes</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="faq">
+        <div class="container">
+          <div style="font-weight:900; font-size:22px; margin-bottom:12px">Preguntas frecuentes</div>
+          <div class="glass card">
+            <details open>
+              <summary style="cursor:pointer; font-weight:800">¿La IA reemplaza una revisión mecánica?</summary>
+              <div style="color:var(--text-1); margin-top:8px">No. Es una estimación visual basada en fotos y sirve como apoyo para decidir.</div>
+            </details>
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,.08); margin:14px 0" />
+            <details>
+              <summary style="cursor:pointer; font-weight:800">¿Cómo hago una pregunta al vendedor?</summary>
+              <div style="color:var(--text-1); margin-top:8px">En el detalle del auto tenés una sección de Preguntas y Respuestas.</div>
+            </details>
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,.08); margin:14px 0" />
+            <details>
+              <summary style="cursor:pointer; font-weight:800">¿Puedo comparar autos?</summary>
+              <div style="color:var(--text-1); margin-top:8px">Sí, podés seleccionar hasta 4 autos y verlos en una tabla comparativa.</div>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div data-include="./partials/footer.html"></div>
+  </div>
+
+  <script src="./js/config.js"></script>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ingresar — LuxAuto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/base.css" />
+  <link rel="stylesheet" href="./styles/layout.css" />
+  <link rel="stylesheet" href="./styles/components.css" />
+  <link rel="stylesheet" href="./styles/pages.css" />
+</head>
+<body>
+  <div class="page">
+    <div data-include="./partials/navbar.html"></div>
+
+    <main class="section">
+      <div class="container" style="max-width:520px">
+        <div class="glass card">
+          <div style="font-weight:900; font-size:22px">Ingresar</div>
+          <div style="color:var(--text-1); margin-top:6px">Accedé para publicar, preguntar o responder.</div>
+
+          <form id="loginForm" style="margin-top:16px; display:grid; gap:10px">
+            <div>
+              <label>Email</label>
+              <input class="input" name="email" type="email" required />
+            </div>
+            <div>
+              <label>Contraseña</label>
+              <input class="input" name="password" type="password" minlength="6" required />
+            </div>
+            <button class="btn primary" type="submit">Entrar</button>
+          </form>
+
+          <div style="margin-top:12px; color:var(--text-1); font-size:13px">
+            ¿No tenés cuenta? <a href="./register.html" style="color:var(--accent-2)">Registrate</a>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div data-include="./partials/footer.html"></div>
+  </div>
+
+  <script src="./js/config.js"></script>
+  <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/login-page.js"></script>
+</body>
+</html>

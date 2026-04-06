@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Publicar — LuxAuto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/base.css" />
+  <link rel="stylesheet" href="./styles/layout.css" />
+  <link rel="stylesheet" href="./styles/components.css" />
+  <link rel="stylesheet" href="./styles/pages.css" />
+</head>
+<body>
+  <div class="page">
+    <div data-include="./partials/navbar.html"></div>
+
+    <main class="section">
+      <div class="container" style="max-width:920px">
+        <div class="glass card">
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap">
+            <div>
+              <div style="font-weight:900; font-size:22px" id="sellTitle">Publicar auto</div>
+              <div style="color:var(--text-1); margin-top:6px" id="sellSubtitle">Completá los datos y subí fotos. El análisis IA se ejecuta automáticamente.</div>
+            </div>
+          </div>
+
+          <form id="sellForm" style="margin-top:16px; display:grid; gap:12px">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+              <div>
+                <label>Marca</label>
+                <input class="input" name="brand" required />
+              </div>
+              <div>
+                <label>Modelo</label>
+                <input class="input" name="model" required />
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px">
+              <div>
+                <label>Año</label>
+                <input class="input" name="year" type="number" min="1900" required />
+              </div>
+              <div>
+                <label>Kilometraje</label>
+                <input class="input" name="mileage" type="number" min="0" required />
+              </div>
+              <div>
+                <label>Precio</label>
+                <input class="input" name="price" type="number" min="0" required />
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+              <div>
+                <label>Combustible</label>
+                <select name="fuel" required>
+                  <option>GASOLINE</option>
+                  <option>DIESEL</option>
+                  <option>FLEX</option>
+                  <option>HYBRID</option>
+                  <option>ELECTRIC</option>
+                  <option>GNV</option>
+                  <option>OTHER</option>
+                </select>
+              </div>
+              <div>
+                <label>Transmisión</label>
+                <select name="transmission" required>
+                  <option>MANUAL</option>
+                  <option>AUTOMATIC</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px">
+              <div>
+                <label>Ubicación</label>
+                <input class="input" name="location" required />
+              </div>
+              <div>
+                <label>Carrocería</label>
+                <select name="bodyType" required>
+                  <option>SEDAN</option>
+                  <option>SUV</option>
+                  <option>COUPE</option>
+                  <option>HATCHBACK</option>
+                  <option>WAGON</option>
+                  <option>PICKUP</option>
+                  <option>VAN</option>
+                  <option>CROSSOVER</option>
+                  <option>OTHER</option>
+                </select>
+              </div>
+              <div>
+                <label>Color</label>
+                <input class="input" name="color" required />
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+              <div>
+                <label>Cantidad de dueños</label>
+                <input class="input" name="ownersCount" type="number" min="0" required />
+              </div>
+              <div>
+                <label>Fotos (jpeg/png/webp, múltiples)</label>
+                <input class="input" name="images" type="file" accept="image/*" multiple required />
+              </div>
+            </div>
+
+            <div>
+              <label>Descripción</label>
+              <textarea name="description" rows="4" required></textarea>
+            </div>
+
+            <div class="split">
+              <button class="btn primary" type="submit" id="publishBtn">Publicar</button>
+              <a class="btn" href="./cars.html">Cancelar</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <div data-include="./partials/footer.html"></div>
+  </div>
+
+  <script src="./js/config.js"></script>
+  <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/sell-page.js"></script>
+</body>
+</html>
