@@ -19,6 +19,7 @@ document.getElementById('registerForm').addEventListener('submit', async (ev) =>
     location.href = './profile.html';
   } catch (e) {
     console.error(e);
-    toast('error', 'Registro', 'No se pudo registrar (email en uso o error).');
+    const detail = e?.message ? ` ${e.message}` : '';
+    toast('error', 'Registro', `No se pudo registrar.${detail}`);
   }
 });

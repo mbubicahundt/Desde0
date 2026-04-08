@@ -4,6 +4,25 @@ function baseUrl() {
   return window.__APP_CONFIG__?.API_BASE_URL ?? '';
 }
 
+function toErrorMessage(value) {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value)) {
+    const parts = value.map((entry) => toErrorMessage(entry)).filter(Boolean);
+    return parts.join(' | ');
+  }
+  if (typeof value === 'object') {
+    if ('message' in value) return toErrorMessage(value.message);
+    if ('error' in value) return toErrorMessage(value.error);
+    try {
+      return JSON.stringify(value);
+    } catch {
+      return '';
+    }
+  }
+  return String(value);
+}
+
 export async function apiFetch(path, options = {}) {
   const url = `${baseUrl()}${path.startsWith('/') ? '' : '/'}${path}`;
   const headers = new Headers(options.headers || {});
@@ -27,7 +46,7 @@ export async function apiFetch(path, options = {}) {
   }
 
   if (!res.ok) {
-    const message = body?.message || body?.error || body || `HTTP ${res.status}`;
+    const message = toErrorMessage(body) || `HTTP ${res.status}`;
     const err = new Error(message);
     err.status = res.status;
     err.body = body;
