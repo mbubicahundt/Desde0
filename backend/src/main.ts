@@ -7,7 +7,11 @@ import { isAbsolute, join } from 'path';
 import { AppModule } from './app.module';
 
 function normalizeOrigin(raw: string): string {
-  const trimmed = raw.trim().replace(/\/$/, '');
+  let trimmed = raw.trim();
+  // Tolerate env values wrapped in quotes/backticks from dashboards/copy-paste.
+  trimmed = trimmed.replace(/^['"`]+|['"`]+$/g, '');
+  trimmed = trimmed.replace(/[;,]+$/g, '');
+  trimmed = trimmed.replace(/\/$/, '');
   if (!trimmed) return '';
   if (trimmed === '*') return '*';
 
