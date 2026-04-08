@@ -31,18 +31,17 @@ Requiere Node.js 18+.
 
 1. Entrar a `backend/` e instalar:
    - `npm install`
-2. Copiar variables:
-   - copiar `backend/.env.example` a `backend/.env` y completar.
+2. Definir variables de entorno en tu shell/servicio (este backend no lee archivo `.env`).
 3. Levantar en dev:
    - `npm run start:dev`
 
 Variables importantes:
 - `DATABASE_URL` (Railway Postgres)
-- `JWT_SECRET`
-- `PUBLIC_BASE_URL` (URL pública del backend; se usa para generar URLs de imágenes)
+- `JWT_SECRET` (alias: `JWT_SECRET_PASSWORD`)
+- URL pública del backend para imágenes: `PUBLIC_BASE_URL` (aliases: `BACKEND_PUBLIC_URL`, `BACKEND_URL`, `CORS_URL`, `APP_URL`)
 - `UPLOADS_DIR` (directorio donde se guardan imágenes; en Railway usar Volume)
 - `GEMINI_API_KEY`
-- `CORS_ORIGINS` (lista separada por comas)
+- origins permitidos para frontend: `CORS_ORIGINS` (aliases: `FRONTEND_ORIGINS`, `FRONTEND_URL`, `APP_URL`, `CORS_URL`)
 
 ## Frontend (local)
 
@@ -61,7 +60,7 @@ Config de API:
 
 - Crear un servicio desde este repo.
 - Seleccionar **Root Directory**: `backend`
-- Setear variables de entorno igual que en `.env` (Railway no usa `.env` por defecto).
+- Setear variables de entorno en Railway (este backend ignora archivos `.env`).
 - Comando sugerido:
   - Build: `npm run build`
   - Start: `npm run start:prod`

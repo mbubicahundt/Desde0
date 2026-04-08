@@ -4,41 +4,12 @@ import { NestFactory } from '@nestjs/core';
 import express from 'express';
 import helmet from 'helmet';
 import { isAbsolute, join } from 'path';
+import {
+  normalizeRequestOrigin,
+  resolveAllowedOrigins,
+  resolveUploadsDir,
+} from './config/runtime-env';
 import { AppModule } from './app.module';
-
-function normalizeOrigin(raw: string): string {
-  let trimmed = raw.trim();
-  // Tolerate env values wrapped in quotes/backticks from dashboards/copy-paste.
-  trimmed = trimmed.replace(/^['"`]+|['"`]+$/g, '');
-  trimmed = trimmed.replace(/[;,]+$/g, '');
-  trimmed = trimmed.replace(/\/$/, '');
-  if (!trimmed) return '';
-  if (trimmed === '*') return '*';
-
-  // If user provided a full URL (including path/query), keep only its origin.
-  try {
-    const url = new URL(trimmed);
-    return url.origin.toLowerCase();
-  } catch {
-    // Ignore parse errors and continue with fallback normalization.
-  }
-
-  // Accept values like frontend.example.com/path by forcing URL parsing.
-  if (!/^https?:\/\//i.test(trimmed) && /^[^\s]+\.[^\s]+/.test(trimmed)) {
-    try {
-      const url = new URL(`https://${trimmed}`);
-      return url.origin.toLowerCase();
-    } catch {
-      // Fallback below
-    }
-  }
-
-  if (/^https?:\/\//i.test(trimmed)) return trimmed.toLowerCase();
-  if (/^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(trimmed)) {
-    return `http://${trimmed.toLowerCase()}`;
-  }
-  return `https://${trimmed.toLowerCase()}`;
-}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -50,20 +21,13 @@ async function bootstrap() {
     }),
   );
 
-  const uploadsDirRaw = config.get<string>('UPLOADS_DIR') ?? 'uploads';
+  const uploadsDirRaw = resolveUploadsDir(config);
   const uploadsDir = isAbsolute(uploadsDirRaw)
     ? uploadsDirRaw
     : join(process.cwd(), uploadsDirRaw);
   app.use('/uploads', express.static(uploadsDir));
 
-  const corsOriginsRaw =
-    config.get<string>('CORS_ORIGINS') ?? config.get<string>('CORS_URL') ?? '';
-  const allowlist = new Set(
-    corsOriginsRaw
-      .split(',')
-      .map((o) => normalizeOrigin(o))
-      .filter(Boolean),
-  );
+  const allowlist = resolveAllowedOrigins(config);
 
   app.enableCors({
     origin: (
@@ -82,7 +46,7 @@ async function bootstrap() {
         callback(null, true);
         return;
       }
-      const normalizedOrigin = normalizeOrigin(origin);
+      const normalizedOrigin = normalizeRequestOrigin(origin);
       if (allowlist.has(normalizedOrigin)) {
         callback(null, true);
         return;

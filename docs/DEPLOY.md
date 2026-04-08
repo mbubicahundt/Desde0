@@ -9,7 +9,7 @@
 
 ## 1) Variables de entorno (backend / Railway)
 
-Setear en Railway **exactamente** estas variables (equivalentes a `backend/.env.example`):
+Setear en Railway estas variables (este backend ignora `.env` y lee solo variables del entorno):
 
 - `PORT` (Railway suele setearlo; opcional)
 - `NODE_ENV=production`
@@ -17,17 +17,21 @@ Setear en Railway **exactamente** estas variables (equivalentes a `backend/.env.
 **CORS**
 - `CORS_ORIGINS` (comma-separated)
   - Ejemplo: `https://tu-sitio.netlify.app,http://localhost:5173`
+  - Aliases aceptados: `FRONTEND_ORIGINS`, `FRONTEND_URL`, `APP_URL`, `CORS_URL`
 
 **DB (Railway Postgres)**
 - `DATABASE_URL` (connection string de Railway)
 - `DATABASE_SSL=true` (recomendado en servicios Postgres gestionados)
+  - Alias aceptado: `DB_SSL=true`
 
 **JWT**
 - `JWT_SECRET` (string larga/aleatoria)
+  - Alias aceptado: `JWT_SECRET_PASSWORD`
 - `JWT_EXPIRES_IN=1h` (opcional)
 
 **Uploads (filesystem)**
 - `PUBLIC_BASE_URL` (URL pública del backend, ej: `https://<svc>.up.railway.app`)
+  - Aliases aceptados: `BACKEND_PUBLIC_URL`, `BACKEND_URL`, `CORS_URL`, `APP_URL`
 - `UPLOADS_DIR` (path del volumen montado, ej: `/app/uploads`)
 
 **IA (Gemini)**

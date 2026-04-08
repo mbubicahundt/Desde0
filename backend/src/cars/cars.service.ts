@@ -10,11 +10,11 @@ import { randomUUID } from 'crypto';
 import { mkdir, writeFile } from 'fs/promises';
 import { isAbsolute, join } from 'path';
 import { Pool } from 'pg';
+import { optionalInt } from '../config/env.util';
 import {
-  optionalInt,
-  optionalStringAny,
-  requiredString,
-} from '../config/env.util';
+  resolveBackendPublicBaseUrl,
+  resolveUploadsDir,
+} from '../config/runtime-env';
 import { PG_POOL } from '../database/database.constants';
 import type { ListCarsQuery } from './dto/list-cars.query';
 import type { CreateCarDto } from './dto/create-car.dto';
@@ -76,15 +76,12 @@ export class CarsService {
   ) {
     this.maxImageCount = optionalInt(config, 'MAX_IMAGE_COUNT', 10);
 
-    const uploadsDirRaw = config.get<string>('UPLOADS_DIR') ?? 'uploads';
+    const uploadsDirRaw = resolveUploadsDir(config);
     this.uploadsDir = isAbsolute(uploadsDirRaw)
       ? uploadsDirRaw
       : join(process.cwd(), uploadsDirRaw);
 
-    const baseUrl =
-      optionalStringAny(config, ['PUBLIC_BASE_URL', 'APP_URL']) ??
-      requiredString(config, 'PUBLIC_BASE_URL');
-    this.publicBaseUrl = baseUrl.replace(/\/$/, '');
+    this.publicBaseUrl = resolveBackendPublicBaseUrl(config).replace(/\/$/, '');
   }
 
   private toPublicUrl(relativePath: string): string {

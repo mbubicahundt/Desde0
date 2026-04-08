@@ -5,6 +5,7 @@ import { Pool } from 'pg';
 import { readFile } from 'fs/promises';
 import { isAbsolute, join } from 'path';
 import { optionalInt } from '../config/env.util';
+import { resolveUploadsDir } from '../config/runtime-env';
 import { PG_POOL } from '../database/database.constants';
 import type { DbCarAiAnalysis, DbCarImage } from '../cars/cars.service';
 
@@ -44,7 +45,7 @@ export class AiService {
     this.currency = config.get('DEFAULT_CURRENCY') ?? 'USD';
     this.maxImages = optionalInt(config, 'AI_MAX_IMAGES', 3);
 
-    const uploadsDirRaw = config.get<string>('UPLOADS_DIR') ?? 'uploads';
+    const uploadsDirRaw = resolveUploadsDir(config);
     this.uploadsDir = isAbsolute(uploadsDirRaw)
       ? uploadsDirRaw
       : join(process.cwd(), uploadsDirRaw);
