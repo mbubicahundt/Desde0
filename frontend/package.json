@@ -1,0 +1,14 @@
+{
+  "name": "desde0-frontend",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node scripts/start.mjs"
+  },
+  "dependencies": {
+    "serve-handler": "^6.1.5"
+  }
+}
