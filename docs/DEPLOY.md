@@ -3,10 +3,9 @@
 ## 0) Requisitos
 
 - Node.js 18+ (backend y script de Netlify).
-- Supabase:
-  - Proyecto creado.
-  - SQL ejecutado: `db/queries/000_extensions.sql`, `001_tables.sql`, `002_indexes.sql`.
-  - Bucket público de Storage creado (ej: `car-images`).
+- Railway:
+  - Plugin de **PostgreSQL** creado.
+  - (Recomendado) Un **Volume** montado para persistir `UPLOADS_DIR`.
 
 ## 1) Variables de entorno (backend / Railway)
 
@@ -19,18 +18,17 @@ Setear en Railway **exactamente** estas variables (equivalentes a `backend/.env.
 - `CORS_ORIGINS` (comma-separated)
   - Ejemplo: `https://tu-sitio.netlify.app,http://localhost:5173`
 
-**DB (Supabase Postgres)**
-- `DATABASE_URL` (connection string de Supabase)
-- `DATABASE_SSL=true` (recomendado con Supabase)
+**DB (Railway Postgres)**
+- `DATABASE_URL` (connection string de Railway)
+- `DATABASE_SSL=true` (recomendado en servicios Postgres gestionados)
 
 **JWT**
 - `JWT_SECRET` (string larga/aleatoria)
 - `JWT_EXPIRES_IN=1h` (opcional)
 
-**Supabase Storage**
-- `SUPABASE_URL` (ej: `https://xxxx.supabase.co`)
-- `SUPABASE_SERVICE_ROLE_KEY` (service role key)
-- `SUPABASE_STORAGE_BUCKET=car-images`
+**Uploads (filesystem)**
+- `PUBLIC_BASE_URL` (URL pública del backend, ej: `https://<svc>.up.railway.app`)
+- `UPLOADS_DIR` (path del volumen montado, ej: `/app/uploads`)
 
 **IA (Gemini)**
 - `GEMINI_API_KEY`
@@ -52,6 +50,18 @@ Setear en Railway **exactamente** estas variables (equivalentes a `backend/.env.
 
 Verificación rápida:
 - Abrir la URL pública del backend y chequear `GET /`.
+- Abrir una imagen subida (si ya subiste) en `GET /uploads/...`.
+
+## 2.1) Crear el schema en Railway Postgres
+
+Railway te da un `DATABASE_URL`. Con cualquier cliente SQL (DBeaver, TablePlus, psql, etc.) conectate y ejecutá en orden:
+
+1. `db/queries/000_extensions.sql`
+2. `db/queries/001_tables.sql`
+3. `db/queries/002_indexes.sql`
+4. (opcional) `db/queries/010_seed_dev.sql`
+
+Nota: `000_extensions.sql` crea la extensión `pgcrypto` (necesaria para `gen_random_uuid()`).
 
 ## 3) Netlify (frontend)
 
@@ -94,4 +104,4 @@ Asegurate de agregar el origin de Netlify en `CORS_ORIGINS` del backend.
 ## 5) Notas comunes
 
 - Si usás Deploy Previews en Netlify, el origin cambia. En esta API se usa allowlist estricta, así que hay que agregar cada origin que quieras permitir.
-- Las imágenes se suben a Supabase Storage; el bucket debe ser público para que la IA pueda descargarlas por URL.
+- Las imágenes se guardan en disco y se sirven por `/uploads/*`. En Railway necesitás un Volume para persistencia.

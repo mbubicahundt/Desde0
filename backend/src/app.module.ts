@@ -6,7 +6,6 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
-import { SupabaseModule } from './supabase/supabase.module';
 import { AuthModule } from './auth/auth.module';
 import { CarsModule } from './cars/cars.module';
 import { AiModule } from './ai/ai.module';
@@ -26,7 +25,6 @@ import { QaModule } from './qa/qa.module';
       },
     ]),
     DatabaseModule,
-    SupabaseModule,
     AuthModule,
     CarsModule,
     NotificationsModule,

@@ -1,6 +1,6 @@
 # LuxAuto — Plataforma Inteligente de Autos Usados
 
-Proyecto fullstack (Frontend Vanilla + Backend NestJS) con Supabase (Postgres + Storage) e integración IA (Gemini Vision) para analizar fotos del vehículo.
+Proyecto fullstack (Frontend Vanilla + Backend NestJS) con PostgreSQL (Railway) e integración IA (Gemini Vision) para analizar fotos del vehículo.
 
 Documentación:
 
@@ -14,17 +14,16 @@ Documentación:
 
 - `frontend/src/` — HTML/CSS/JS vanilla (multipágina)
 - `backend/` — API REST NestJS
-- `db/queries/` — scripts SQL para Supabase
+- `db/queries/` — scripts SQL para PostgreSQL (Railway)
 
-## Base de datos (Supabase)
+## Base de datos (Railway Postgres)
 
-1. Crear un proyecto en Supabase.
-2. Abrir **SQL Editor** y ejecutar en orden:
+1. Crear un plugin de **PostgreSQL** en Railway.
+2. Conectarse al Postgres (Railway CLI o cliente SQL) y ejecutar en orden:
    - `db/queries/000_extensions.sql`
    - `db/queries/001_tables.sql`
    - `db/queries/002_indexes.sql`
    - (opcional) `db/queries/010_seed_dev.sql`
-3. Crear un bucket público en Supabase Storage (por ejemplo `car-images`).
 
 ## Backend (local)
 
@@ -38,9 +37,10 @@ Requiere Node.js 18+.
    - `npm run start:dev`
 
 Variables importantes:
-- `DATABASE_URL` (Supabase Postgres)
+- `DATABASE_URL` (Railway Postgres)
 - `JWT_SECRET`
-- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_STORAGE_BUCKET`
+- `PUBLIC_BASE_URL` (URL pública del backend; se usa para generar URLs de imágenes)
+- `UPLOADS_DIR` (directorio donde se guardan imágenes; en Railway usar Volume)
 - `GEMINI_API_KEY`
 - `CORS_ORIGINS` (lista separada por comas)
 
@@ -65,6 +65,10 @@ Config de API:
 - Comando sugerido:
   - Build: `npm run build`
   - Start: `npm run start:prod`
+
+Uploads:
+- Montar un **Volume** y setear `UPLOADS_DIR` al path del mount.
+- Setear `PUBLIC_BASE_URL` a la URL pública del backend (Railway).
 
 CORS:
 - Agregar la URL de Netlify a `CORS_ORIGINS` (ej: `https://tu-sitio.netlify.app`).

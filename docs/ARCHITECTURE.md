@@ -4,8 +4,8 @@
 
 - **Frontend**: sitio estático multipágina en HTML/CSS/JS vanilla (`frontend/src`).
 - **Backend**: API REST en NestJS (`backend/src`).
-- **Base de datos**: Supabase Postgres (tablas/índices en `db/queries`).
-- **Imágenes**: Supabase Storage (bucket público).
+- **Base de datos**: Railway Postgres (tablas/índices en `db/queries`).
+- **Imágenes**: filesystem del backend (idealmente Railway Volume) servido en `/uploads/*`.
 - **IA**: Gemini (Google Generative AI) para análisis de fotos del auto.
 - **Deploy**: Backend en Railway, Frontend en Netlify.
 
@@ -31,8 +31,7 @@ Módulos NestJS principales:
 - **AiModule**: análisis IA por auto (usa imágenes del auto).
 - **QaModule**: preguntas públicas + respuesta/ocultar por vendedor.
 - **NotificationsModule**: notificaciones in-app (polling desde frontend).
-- **DatabaseModule**: conexión a Supabase Postgres vía `pg` (`DATABASE_URL`).
-- **SupabaseModule**: cliente Supabase para Storage (`SUPABASE_*`).
+- **DatabaseModule**: conexión a Postgres vía `pg` (`DATABASE_URL`).
 
 Seguridad y plataforma:
 
@@ -44,8 +43,8 @@ Seguridad y plataforma:
 ## Flujo de datos (alto nivel)
 
 1. El vendedor crea una publicación (`POST /cars`) → se guarda en Postgres.
-2. Sube fotos (`POST /cars/:id/images`) → se sube a Supabase Storage → se guarda `car_images` en Postgres.
-3. Dispara análisis IA (`POST /cars/:id/analyze`) → se descargan imágenes (URL pública) → Gemini devuelve JSON → se guarda en `car_ai_analysis`.
+2. Sube fotos (`POST /cars/:id/images`) → se guarda en disco (uploads) → se guarda `car_images` en Postgres.
+3. Dispara análisis IA (`POST /cars/:id/analyze`) → el backend lee imágenes desde disco → Gemini devuelve JSON → se guarda en `car_ai_analysis`.
 4. Comprador navega listado/detalle (`GET /cars`, `GET /cars/:id`) y ve IA.
 5. Comprador pregunta (`POST /cars/:id/questions`) → crea notificación al vendedor.
 6. Vendedor responde/oculta (`POST /questions/:id/answer`, `PATCH /questions/:id/hide`) → crea notificación al comprador.
@@ -55,6 +54,6 @@ Seguridad y plataforma:
 
 - `DATABASE_URL`, `DATABASE_SSL`
 - `JWT_SECRET`, `JWT_EXPIRES_IN`
-- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_STORAGE_BUCKET`
+- `PUBLIC_BASE_URL`, `UPLOADS_DIR`
 - `GEMINI_API_KEY`, `GEMINI_MODEL`, `DEFAULT_CURRENCY`
 - `CORS_ORIGINS`

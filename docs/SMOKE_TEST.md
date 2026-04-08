@@ -48,4 +48,4 @@ cd "c:\Users\mirko\Desktop\Desde 0"
 
 - Si `register` falla por email existente, el script continúa y usa `login`.
 - El análisis IA puede fallar si no hay imágenes o si no está configurado `GEMINI_API_KEY`.
-- Para que IA pueda descargar imágenes, el bucket de Supabase Storage debe ser público.
+- Las imágenes se guardan en `UPLOADS_DIR` y se sirven por `GET /uploads/...` (en Railway, usar Volume para persistencia).

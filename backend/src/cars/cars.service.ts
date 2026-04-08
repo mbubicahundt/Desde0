@@ -6,12 +6,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { SupabaseClient } from '@supabase/supabase-js';
 import { randomUUID } from 'crypto';
+import { mkdir, writeFile } from 'fs/promises';
+import { isAbsolute, join } from 'path';
 import { Pool } from 'pg';
 import { optionalInt, requiredString } from '../config/env.util';
 import { PG_POOL } from '../database/database.constants';
-import { SUPABASE_CLIENT } from '../supabase/supabase.constants';
 import type { ListCarsQuery } from './dto/list-cars.query';
 import type { CreateCarDto } from './dto/create-car.dto';
 import type { UpdateCarDto } from './dto/update-car.dto';
@@ -62,22 +62,30 @@ export type DbCarAiAnalysis = {
 
 @Injectable()
 export class CarsService {
-  private readonly bucket: string;
   private readonly maxImageCount: number;
-  private readonly maxImageSizeBytes: number;
+  private readonly uploadsDir: string;
+  private readonly publicBaseUrl: string;
 
   constructor(
     @Inject(PG_POOL) private readonly pool: Pool,
-    @Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient,
     private readonly config: ConfigService,
   ) {
-    this.bucket = requiredString(config, 'SUPABASE_STORAGE_BUCKET');
     this.maxImageCount = optionalInt(config, 'MAX_IMAGE_COUNT', 10);
-    this.maxImageSizeBytes = optionalInt(
-      config,
-      'MAX_IMAGE_SIZE_BYTES',
-      5_242_880,
+
+    const uploadsDirRaw = config.get<string>('UPLOADS_DIR') ?? 'uploads';
+    this.uploadsDir = isAbsolute(uploadsDirRaw)
+      ? uploadsDirRaw
+      : join(process.cwd(), uploadsDirRaw);
+
+    this.publicBaseUrl = requiredString(config, 'PUBLIC_BASE_URL').replace(
+      /\/$/,
+      '',
     );
+  }
+
+  private toPublicUrl(relativePath: string): string {
+    const normalized = relativePath.replace(/\\/g, '/');
+    return `${this.publicBaseUrl}/uploads/${normalized}`;
   }
 
   async createCar(sellerId: string, dto: CreateCarDto): Promise<DbCar> {
@@ -290,29 +298,19 @@ export class CarsService {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const ext = this.guessExt(file.mimetype);
-      const path = `cars/${carId}/${randomUUID()}${ext}`;
+      const relativePath = `cars/${carId}/${randomUUID()}${ext}`;
+      const fullPath = join(this.uploadsDir, relativePath);
 
-      const { error } = await this.supabase.storage
-        .from(this.bucket)
-        .upload(path, file.buffer, {
-          contentType: file.mimetype,
-          upsert: false,
-        });
+      await mkdir(join(this.uploadsDir, `cars/${carId}`), { recursive: true });
+      await writeFile(fullPath, file.buffer);
 
-      if (error) {
-        throw new BadRequestException(`Upload failed: ${error.message}`);
-      }
-
-      const { data } = this.supabase.storage
-        .from(this.bucket)
-        .getPublicUrl(path);
-      const publicUrl = data.publicUrl;
+      const publicUrl = this.toPublicUrl(relativePath);
 
       const row = await this.pool.query<DbCarImage>(
         `insert into public.car_images (car_id, storage_path, public_url, sort_order)
          values ($1,$2,$3,$4)
          returning *`,
-        [carId, path, publicUrl, i],
+        [carId, relativePath, publicUrl, i],
       );
 
       created.push(row.rows[0]);

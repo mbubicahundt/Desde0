@@ -2,6 +2,8 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Pool } from 'pg';
+import { readFile } from 'fs/promises';
+import { isAbsolute, join } from 'path';
 import { optionalInt, requiredString } from '../config/env.util';
 import { PG_POOL } from '../database/database.constants';
 import type { DbCarAiAnalysis, DbCarImage } from '../cars/cars.service';
@@ -30,6 +32,7 @@ export class AiService {
   private readonly modelName: string;
   private readonly currency: string;
   private readonly maxImages: number;
+  private readonly uploadsDir: string;
 
   constructor(
     @Inject(PG_POOL) private readonly pool: Pool,
@@ -41,6 +44,11 @@ export class AiService {
     this.modelName = config.get('GEMINI_MODEL') ?? 'gemini-1.5-flash';
     this.currency = config.get('DEFAULT_CURRENCY') ?? 'USD';
     this.maxImages = optionalInt(config, 'AI_MAX_IMAGES', 3);
+
+    const uploadsDirRaw = config.get<string>('UPLOADS_DIR') ?? 'uploads';
+    this.uploadsDir = isAbsolute(uploadsDirRaw)
+      ? uploadsDirRaw
+      : join(process.cwd(), uploadsDirRaw);
   }
 
   async analyzeCar(carId: string): Promise<DbCarAiAnalysis> {
@@ -58,7 +66,7 @@ export class AiService {
       inlineData: { data: string; mimeType: string };
     }> = [];
     for (const img of images) {
-      const { base64, mimeType } = await this.fetchAsBase64(img.public_url);
+      const { base64, mimeType } = await this.loadImageAsBase64(img);
       imageParts.push({ inlineData: { data: base64, mimeType } });
     }
 
@@ -207,5 +215,31 @@ Guidelines:
       base64: buffer.toString('base64'),
       mimeType,
     };
+  }
+
+  private async loadImageAsBase64(
+    img: DbCarImage,
+  ): Promise<{ base64: string; mimeType: string }> {
+    if (img.storage_path) {
+      try {
+        const fullPath = join(this.uploadsDir, img.storage_path);
+        const buffer = await readFile(fullPath);
+        return {
+          base64: buffer.toString('base64'),
+          mimeType: this.mimeFromPath(img.storage_path),
+        };
+      } catch {
+        // fallback to public_url
+      }
+    }
+
+    return this.fetchAsBase64(img.public_url);
+  }
+
+  private mimeFromPath(path: string): string {
+    const lower = path.toLowerCase();
+    if (lower.endsWith('.png')) return 'image/png';
+    if (lower.endsWith('.webp')) return 'image/webp';
+    return 'image/jpeg';
   }
 }

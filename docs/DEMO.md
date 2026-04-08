@@ -4,9 +4,11 @@ Objetivo: mostrar registro, publicación, búsqueda, análisis IA y flujo Q&A + 
 
 ## Pre-check (5 min)
 
-- Supabase
+- Railway Postgres
   - Ejecutado `db/queries/000_extensions.sql`, `001_tables.sql`, `002_indexes.sql`.
-  - Bucket público creado (ej: `car-images`).
+- Railway Volume (uploads)
+  - `UPLOADS_DIR` apunta al mount path del volumen.
+  - `PUBLIC_BASE_URL` es la URL pública del backend.
 - Backend
   - Variables cargadas (ver `backend/.env.example`).
   - `CORS_ORIGINS` incluye el origin del frontend (Netlify o local).
