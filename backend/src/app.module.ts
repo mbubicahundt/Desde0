@@ -16,7 +16,7 @@ import { QaModule } from './qa/qa.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env'],
+      ignoreEnvFile: true,
     }),
     ThrottlerModule.forRoot([
       {
