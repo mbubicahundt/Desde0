@@ -23,6 +23,8 @@ Setear en Railway estas variables (este backend ignora `.env` y lee solo variabl
 - `DATABASE_URL` (connection string de Railway)
 - `DATABASE_SSL=true` (recomendado en servicios Postgres gestionados)
   - Alias aceptado: `DB_SSL=true`
+- (Opcional) `DB_QUERIES_DIR` para forzar ubicación de SQL de schema
+- (Opcional) `DB_AUTO_SEED=true` para ejecutar también `010_seed_dev.sql` al inicializar schema
 
 **JWT**
 - `JWT_SECRET` (string larga/aleatoria)
