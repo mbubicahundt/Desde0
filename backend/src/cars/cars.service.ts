@@ -10,7 +10,11 @@ import { randomUUID } from 'crypto';
 import { mkdir, writeFile } from 'fs/promises';
 import { isAbsolute, join } from 'path';
 import { Pool } from 'pg';
-import { optionalInt, requiredString } from '../config/env.util';
+import {
+  optionalInt,
+  optionalStringAny,
+  requiredString,
+} from '../config/env.util';
 import { PG_POOL } from '../database/database.constants';
 import type { ListCarsQuery } from './dto/list-cars.query';
 import type { CreateCarDto } from './dto/create-car.dto';
@@ -77,10 +81,10 @@ export class CarsService {
       ? uploadsDirRaw
       : join(process.cwd(), uploadsDirRaw);
 
-    this.publicBaseUrl = requiredString(config, 'PUBLIC_BASE_URL').replace(
-      /\/$/,
-      '',
-    );
+    const baseUrl =
+      optionalStringAny(config, ['PUBLIC_BASE_URL', 'APP_URL']) ??
+      requiredString(config, 'PUBLIC_BASE_URL');
+    this.publicBaseUrl = baseUrl.replace(/\/$/, '');
   }
 
   private toPublicUrl(relativePath: string): string {

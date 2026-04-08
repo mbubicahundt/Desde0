@@ -22,7 +22,8 @@ async function bootstrap() {
     : join(process.cwd(), uploadsDirRaw);
   app.use('/uploads', express.static(uploadsDir));
 
-  const corsOriginsRaw = config.get<string>('CORS_ORIGINS') ?? '';
+  const corsOriginsRaw =
+    config.get<string>('CORS_ORIGINS') ?? config.get<string>('CORS_URL') ?? '';
   const allowlist = corsOriginsRaw
     .split(',')
     .map((o) => o.trim())

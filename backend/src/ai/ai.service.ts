@@ -4,7 +4,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Pool } from 'pg';
 import { readFile } from 'fs/promises';
 import { isAbsolute, join } from 'path';
-import { optionalInt, requiredString } from '../config/env.util';
+import { optionalInt } from '../config/env.util';
 import { PG_POOL } from '../database/database.constants';
 import type { DbCarAiAnalysis, DbCarImage } from '../cars/cars.service';
 
@@ -28,7 +28,7 @@ type GeminiAnalysisJson = {
 
 @Injectable()
 export class AiService {
-  private readonly gemini: GoogleGenerativeAI;
+  private readonly gemini?: GoogleGenerativeAI;
   private readonly modelName: string;
   private readonly currency: string;
   private readonly maxImages: number;
@@ -38,9 +38,8 @@ export class AiService {
     @Inject(PG_POOL) private readonly pool: Pool,
     private readonly config: ConfigService,
   ) {
-    this.gemini = new GoogleGenerativeAI(
-      requiredString(config, 'GEMINI_API_KEY'),
-    );
+    const apiKey = config.get<string>('GEMINI_API_KEY');
+    this.gemini = apiKey ? new GoogleGenerativeAI(apiKey) : undefined;
     this.modelName = config.get('GEMINI_MODEL') ?? 'gemini-1.5-flash';
     this.currency = config.get('DEFAULT_CURRENCY') ?? 'USD';
     this.maxImages = optionalInt(config, 'AI_MAX_IMAGES', 3);
@@ -52,6 +51,9 @@ export class AiService {
   }
 
   async analyzeCar(carId: string): Promise<DbCarAiAnalysis> {
+    if (!this.gemini) {
+      throw new BadRequestException('GEMINI_API_KEY is not configured');
+    }
     const imagesRes = await this.pool.query<DbCarImage>(
       'select * from public.car_images where car_id = $1 order by sort_order asc, created_at asc',
       [carId],

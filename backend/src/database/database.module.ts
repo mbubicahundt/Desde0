@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
-import { optionalBool, requiredString } from '../config/env.util';
+import { optionalBoolAny, requiredString } from '../config/env.util';
 import { PG_POOL } from './database.constants';
 
 @Global()
@@ -12,7 +12,11 @@ import { PG_POOL } from './database.constants';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const connectionString = requiredString(config, 'DATABASE_URL');
-        const useSsl = optionalBool(config, 'DATABASE_SSL', true);
+        const useSsl = optionalBoolAny(
+          config,
+          ['DATABASE_SSL', 'DB_SSL'],
+          true,
+        );
 
         return new Pool({
           connectionString,
