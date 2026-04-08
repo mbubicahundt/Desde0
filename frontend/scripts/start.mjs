@@ -4,7 +4,14 @@ import { resolve } from 'node:path';
 import handler from 'serve-handler';
 
 function normalizeBaseUrl(value) {
-  return String(value).trim().replace(/\/$/, '');
+  const raw = String(value).trim().replace(/\/$/, '');
+  if (!raw) return raw;
+  if (/^https?:\/\//i.test(raw)) return raw;
+  if (raw.startsWith('//')) return `https:${raw}`;
+  if (/^(localhost|127\.0\.0\.1)(:\d+)?(\/.*)?$/i.test(raw)) {
+    return `http://${raw}`;
+  }
+  return `https://${raw}`;
 }
 
 function maybeWriteFrontendConfig() {

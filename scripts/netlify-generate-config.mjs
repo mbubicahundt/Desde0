@@ -20,7 +20,18 @@ if (!apiBaseUrl) {
   process.exit(0);
 }
 
-const normalized = String(apiBaseUrl).replace(/\/$/, '');
+function normalizeBaseUrl(value) {
+  const raw = String(value).trim().replace(/\/$/, '');
+  if (!raw) return raw;
+  if (/^https?:\/\//i.test(raw)) return raw;
+  if (raw.startsWith('//')) return `https:${raw}`;
+  if (/^(localhost|127\.0\.0\.1)(:\d+)?(\/.*)?$/i.test(raw)) {
+    return `http://${raw}`;
+  }
+  return `https://${raw}`;
+}
+
+const normalized = normalizeBaseUrl(apiBaseUrl);
 
 const targetPath = resolve('frontend', 'src', 'js', 'config.js');
 const content = `// Frontend runtime config (static hosting)\n// This file can be overwritten during Netlify build via NETLIFY_API_BASE_URL.\nwindow.__APP_CONFIG__ = {\n  API_BASE_URL: '${normalized}',\n};\n`;
