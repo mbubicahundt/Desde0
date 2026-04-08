@@ -6,6 +6,16 @@ import helmet from 'helmet';
 import { isAbsolute, join } from 'path';
 import { AppModule } from './app.module';
 
+function normalizeOrigin(raw: string): string {
+  const trimmed = raw.trim().replace(/\/$/, '');
+  if (!trimmed) return '';
+  if (/^https?:\/\//i.test(trimmed)) return trimmed.toLowerCase();
+  if (/^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(trimmed)) {
+    return `http://${trimmed.toLowerCase()}`;
+  }
+  return `https://${trimmed.toLowerCase()}`;
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
@@ -24,10 +34,12 @@ async function bootstrap() {
 
   const corsOriginsRaw =
     config.get<string>('CORS_ORIGINS') ?? config.get<string>('CORS_URL') ?? '';
-  const allowlist = corsOriginsRaw
-    .split(',')
-    .map((o) => o.trim())
-    .filter(Boolean);
+  const allowlist = new Set(
+    corsOriginsRaw
+      .split(',')
+      .map((o) => normalizeOrigin(o))
+      .filter(Boolean),
+  );
 
   app.enableCors({
     origin: (
@@ -38,15 +50,16 @@ async function bootstrap() {
         callback(null, true);
         return;
       }
-      if (allowlist.length === 0) {
+      if (allowlist.size === 0) {
         callback(null, true);
         return;
       }
-      if (allowlist.includes(origin)) {
+      const normalizedOrigin = normalizeOrigin(origin);
+      if (allowlist.has(normalizedOrigin)) {
         callback(null, true);
         return;
       }
-      callback(new Error(`CORS blocked for origin: ${origin}`), false);
+      callback(null, false);
     },
   });
 
