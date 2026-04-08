@@ -9,6 +9,26 @@ import { AppModule } from './app.module';
 function normalizeOrigin(raw: string): string {
   const trimmed = raw.trim().replace(/\/$/, '');
   if (!trimmed) return '';
+  if (trimmed === '*') return '*';
+
+  // If user provided a full URL (including path/query), keep only its origin.
+  try {
+    const url = new URL(trimmed);
+    return url.origin.toLowerCase();
+  } catch {
+    // Ignore parse errors and continue with fallback normalization.
+  }
+
+  // Accept values like frontend.example.com/path by forcing URL parsing.
+  if (!/^https?:\/\//i.test(trimmed) && /^[^\s]+\.[^\s]+/.test(trimmed)) {
+    try {
+      const url = new URL(`https://${trimmed}`);
+      return url.origin.toLowerCase();
+    } catch {
+      // Fallback below
+    }
+  }
+
   if (/^https?:\/\//i.test(trimmed)) return trimmed.toLowerCase();
   if (/^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(trimmed)) {
     return `http://${trimmed.toLowerCase()}`;
@@ -51,6 +71,10 @@ async function bootstrap() {
         return;
       }
       if (allowlist.size === 0) {
+        callback(null, true);
+        return;
+      }
+      if (allowlist.has('*')) {
         callback(null, true);
         return;
       }
